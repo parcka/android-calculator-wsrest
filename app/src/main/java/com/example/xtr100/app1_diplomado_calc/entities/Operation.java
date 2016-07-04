@@ -5,32 +5,41 @@ package com.example.xtr100.app1_diplomado_calc.entities;
  */
 public class Operation {
 
-    int numberA;
-    int numberB;
-    int result;
+    Integer numberA;
+    Integer numberB;
+    String operatorSimbol;
+    Integer result;
 
-    public int getNumberA() {
+    public Integer getNumberA() {
         return numberA;
     }
 
-    public void setNumberA(int numberA) {
+    public void setNumberA(Integer numberA) {
         this.numberA = numberA;
     }
 
-    public int getNumberB() {
+    public Integer getNumberB() {
         return numberB;
     }
 
-    public void setNumberB(int numberB) {
+    public void setNumberB(Integer numberB) {
         this.numberB = numberB;
     }
 
-    public int getResult() {
+    public Integer getResult() {
         return result;
     }
 
-    public void setResult(int result) {
+    public void setResult(Integer result) {
         this.result = result;
+    }
+
+    public String getOperatorSimbol() {
+        return operatorSimbol;
+    }
+
+    public void setOperatorSimbol(String operatorSimbol) {
+        this.operatorSimbol = operatorSimbol;
     }
 
     @Override
@@ -38,6 +47,7 @@ public class Operation {
         return "Operation{" +
                 "numberA=" + numberA +
                 ", numberB=" + numberB +
+                ", operatorSimbol='" + operatorSimbol + '\'' +
                 ", result=" + result +
                 '}';
     }
