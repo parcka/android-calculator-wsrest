@@ -7,10 +7,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.xtr100.app1_diplomado_calc.entities.Operation;
 import com.example.xtr100.app1_diplomado_calc.tools.AsyncFunctionResult;
 import com.example.xtr100.app1_diplomado_calc.tools.AsyncOperation;
+import com.example.xtr100.app1_diplomado_calc.tools.ClientWebService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends Activity implements AsyncFunctionResult {
 
@@ -203,6 +216,7 @@ public class MainActivity extends Activity implements AsyncFunctionResult {
     private void consultWs() {
         if (retroFitSwitch.isChecked()) {
             //Codigo de consumo WS mediante RetroFit
+            retroFitConsult();
         } else {
             AsyncOperation asyncOperation = new AsyncOperation(getBaseContext(), AsyncOperation.CONSULT_URL, this, operation);
             asyncOperation.execute();
@@ -213,5 +227,47 @@ public class MainActivity extends Activity implements AsyncFunctionResult {
     public void postProcess(String result) {
 //        this.operation = operationResult;
         display.setText(result);
+    }
+
+    private void retroFitConsult() {
+        JSONObject jsonObject = null;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.3.2:8080/rest/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ClientWebService service = retrofit.create(ClientWebService.class);
+
+        try {
+            jsonObject = new JSONObject(operation.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Call<Operation> operationCall = service.getOperation(operation);
+
+        operationCall.enqueue(new Callback<Operation>() {
+                                  @Override
+                                  public void onResponse(Call<Operation> call, Response<Operation> response) {
+                                      Toast.makeText(getBaseContext(), "1", Toast.LENGTH_LONG).show();
+                                      if (response.isSuccessful()) {
+                                          Gson gson = new Gson();
+                                          Operation operation =   gson.fromJson(response.body().toString(),Operation.class);
+                                          display.setText(operation.getResult().toString());
+                                      } else {
+                                          int statusCode = response.code();
+                                          Toast.makeText(getBaseContext(), "Mal", Toast.LENGTH_LONG).show();
+
+
+                                      }
+                                  }
+
+                                  @Override
+                                  public void onFailure(Call<Operation> call, Throwable t) {
+                                      Toast.makeText(getBaseContext(), "2", Toast.LENGTH_LONG).show();
+                                  }
+                              }
+
+        );
+
     }
 }
