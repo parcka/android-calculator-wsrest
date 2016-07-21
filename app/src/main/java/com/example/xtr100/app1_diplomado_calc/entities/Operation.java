@@ -44,7 +44,7 @@ public class Operation {
 
     @Override
     public String toString() {
-        return "Operation{" +
+        return "{" +
                 "numberA=" + numberA +
                 ", numberB=" + numberB +
                 ", operatorSimbol='" + operatorSimbol + '\'' +
