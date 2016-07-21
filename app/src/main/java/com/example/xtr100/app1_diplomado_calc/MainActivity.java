@@ -3,16 +3,17 @@ package com.example.xtr100.app1_diplomado_calc;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.StringBuilderPrinter;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.xtr100.app1_diplomado_calc.entities.Operation;
+import com.example.xtr100.app1_diplomado_calc.tools.AsyncFunctionResult;
+import com.example.xtr100.app1_diplomado_calc.tools.AsyncOperation;
 
-import java.util.regex.Pattern;
+public class MainActivity extends Activity implements AsyncFunctionResult {
 
-public class MainActivity extends Activity {
 
     Button buttonOne;
     Button buttonTwo;
@@ -24,6 +25,7 @@ public class MainActivity extends Activity {
     Button buttonEigth;
     Button buttonNine;
     TextView display;
+    Switch retroFitSwitch;
 
     Button buttonDivide;
     Button buttonSum;
@@ -32,8 +34,10 @@ public class MainActivity extends Activity {
 
     Operation operation;
 
+    String operatorRegex;
+    String operatortoShow;
     String displayTemp;
-   static final String regexOperations = "+-x/";
+    static final String regexOperations = "\\+-x/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,7 @@ public class MainActivity extends Activity {
 
         operation = new Operation();
         displayTemp = "";
+        retroFitSwitch = (Switch) findViewById(R.id.retroFitSwitch);
 
 
     }
@@ -88,11 +93,13 @@ public class MainActivity extends Activity {
     public void onClickOperationSimbol(View view) {
         Button button = (Button) view;
         String inDisplay = display.getText().toString();
+        operatortoShow = button.getText().toString();
+        operatorRegex = "\\" + operatortoShow;
 
         if (textInDisplay()) {
-            Log.d("TEXT IN DISPLAY ", display.getText() + button.getText().toString());
-            if (!isLastItemOperator() && !operatorInOperation()) {
-                inDisplay += button.getText().toString();
+            Log.d("TEXT IN DISPLAY ", display.getText() + operatorRegex);
+            if (!isLastItemOperator() && !operatorInDisplay()) {
+                inDisplay += operatortoShow;
                 display.setText(inDisplay);
             }
         } else {
@@ -123,15 +130,17 @@ public class MainActivity extends Activity {
         }*/
     }
 
-    private boolean operatorInOperation(){
+    private boolean operatorInDisplay() {
         String inDisplay = display.getText().toString();
-           String[] elements = inDisplay.split(Pattern.quote(regexOperations));
-        if (elements.length>2){
+//        String[] elements = inDisplay.split(Pattern.quote(regexOperations));
+        String[] elements = inDisplay.split(operatorRegex);
+        if (elements.length >= 2) {
             return true;
         }
 
         return false;
     }
+
     private boolean isOperator(String operator) {
         switch (operator) {
             case "+":
@@ -165,9 +174,44 @@ public class MainActivity extends Activity {
         return false;
     }
 
-    public void onClickDeleteDisplay(View view) {
-        display.setText("");
+    private void setOperationEntity() {
+        String inDisplay = display.getText().toString();
+//        String[] elements = inDisplay.split(Pattern.quote(regexOperations));
+        String[] elements = inDisplay.split(operatorRegex);
+        operation.setOperatorSimbol(operatortoShow);
+        for (String number : elements)
+            if (operation.getNumberA() == null)
+                operation.setNumberA(Integer.valueOf(number));
+            else if (operation.getNumberB() == null)
+                operation.setNumberB(Integer.valueOf(number));
+
     }
 
 
+    public void onClickDeleteDisplay(View view) {
+        this.operation = new Operation();
+        display.setText("");
+    }
+
+    public void getResultWS(View view) {
+        if (!isOperationFullSeted()) {
+            setOperationEntity();
+        }
+        consultWs();
+    }
+
+    private void consultWs() {
+        if (retroFitSwitch.isChecked()) {
+            //Codigo de consumo WS mediante RetroFit
+        } else {
+            AsyncOperation asyncOperation = new AsyncOperation(getBaseContext(), AsyncOperation.CONSULT_URL, this, operation);
+            asyncOperation.execute();
+        }
+    }
+
+    @Override
+    public void postProcess(String result) {
+//        this.operation = operationResult;
+        display.setText(result);
+    }
 }

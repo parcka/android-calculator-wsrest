@@ -9,7 +9,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.xtr100.app1_diplomado_calc.MainActivity"
     android:background="#ee6700"
-    android:padding="0dp">
+    android:padding="0dp"
+    android:onClick="getResultWS">
 
 
     <LinearLayout
@@ -19,9 +20,15 @@
         android:gravity="center"
         android:padding="0dp">
 
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RetroFit"
+            android:id="@+id/retroFitSwitch" />
+
         <TextView
             android:layout_width="fill_parent"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/textView"
             android:layout_gravity="right"
@@ -172,7 +179,7 @@
                 android:layout_height="90dp"
                 android:text="="
                 android:id="@+id/button"
-                android:onClick="onClickNumber"
+                android:onClick="getResultWS"
                 android:layout_margin="0dp"
                 android:background="#242424"
                 android:textColor="#ffffff"
