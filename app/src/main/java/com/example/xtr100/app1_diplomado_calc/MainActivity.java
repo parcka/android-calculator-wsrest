@@ -197,7 +197,6 @@ public class MainActivity extends Activity implements AsyncFunctionResult {
                 operation.setNumberA(Integer.valueOf(number));
             else if (operation.getNumberB() == null)
                 operation.setNumberB(Integer.valueOf(number));
-
     }
 
 
@@ -232,7 +231,7 @@ public class MainActivity extends Activity implements AsyncFunctionResult {
     private void retroFitConsult() {
         JSONObject jsonObject = null;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.3.2:8080/rest/")
+                .baseUrl("https://polar-caverns-72078.herokuapp.com/rest/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         ClientWebService service = retrofit.create(ClientWebService.class);
