@@ -25,4 +25,5 @@ https://github.com/parcka/ws-rest-springboot
 **Bugs**
 
 * Consumo mediante http
+* Estructura Json
 
